@@ -24,4 +24,20 @@ public interface ISondorTranslationManager
         string resource,
         string? defaultValue = null,
         params object[] parameters);
+
+    /// <summary>
+    /// Gets the translation for the specified key asynchronously.
+    /// </summary>
+    /// <param name="key">The key.</param>
+    /// <param name="defaultValue">The default value.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="parameters">The parameters.</param>
+    /// <returns>Returns the found translation.</returns>
+    /// <exception cref="ArgumentException">This exception is thrown when an invalid argument is provided.</exception>
+    /// <exception cref="ArgumentNullException">This exception is thrown when an invalid argument is provided.</exception>
+    /// <exception cref="SondorTranslationNotFoundException">This exception is thrown when a translation could not be found.</exception>
+    Task<string> TranslateAsync(string key,
+        string? defaultValue = null,
+        CancellationToken cancellationToken = default,
+        params object[] parameters);
 }

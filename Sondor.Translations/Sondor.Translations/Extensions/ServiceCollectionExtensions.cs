@@ -40,22 +40,27 @@ public static class ServiceCollectionExtensions
         services.Configure<RequestLocalizationOptions>(options =>
         {
             options.DefaultRequestCulture = new RequestCulture(translationOptions.DefaultCulture);
+
+            options.SupportedUICultures = translationOptions.SupportedCultures
+                .Select(culture => new CultureInfo(culture))
+                .ToList();
+
             options.SupportedCultures = translationOptions.SupportedCultures
                 .Select(culture => new CultureInfo(culture))
                 .ToList();
         });
 
-        services.AddLocalization(options =>
-        {
-            options.ResourcesPath = resource;
-        });
+        services.AddLocalization();
 
-        services.AddScoped<ISondorTranslationManager, SondorTranslationManager>(serviceProvider =>
+        services.AddTransient<ISondorTranslationManager, SondorTranslationManager>(serviceProvider =>
         {
             var localizerFactory = serviceProvider.GetRequiredService<IStringLocalizerFactory>();
 
             return new SondorTranslationManager(localizerFactory);
         });
+
+        CultureInfo.CurrentCulture = new CultureInfo(translationOptions.DefaultCulture);
+        CultureInfo.CurrentUICulture = new CultureInfo(translationOptions.DefaultCulture);
 
         return services;
     }

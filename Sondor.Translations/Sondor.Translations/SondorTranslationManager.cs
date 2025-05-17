@@ -10,7 +10,9 @@ namespace Sondor.Translations;
 /// Creates a new instance of <see cref="SondorTranslationManager"/>.
 /// </remarks>
 /// <param name="localizerFactory">The localizer factory.</param>
-public class SondorTranslationManager(IStringLocalizerFactory localizerFactory) :
+/// <param name="providers">The provider.</param>
+public class SondorTranslationManager(IStringLocalizerFactory localizerFactory,
+    IEnumerable<ISondorTranslationProvider>? providers = null) :
     ISondorTranslationManager
 {
     /// <summary>
@@ -18,6 +20,12 @@ public class SondorTranslationManager(IStringLocalizerFactory localizerFactory) 
     /// </summary>
     private readonly IStringLocalizerFactory _localizerFactory =
         localizerFactory;
+
+    /// <summary>
+    /// The translation providers.
+    /// </summary>
+    private readonly IList<ISondorTranslationProvider> _providers =
+            providers?.ToList() ?? [];
 
     /// <inheritdoc />
     public string Translate(string key,
@@ -46,6 +54,45 @@ public class SondorTranslationManager(IStringLocalizerFactory localizerFactory) 
         var formattedTranslation = string.Format(translation, parameters);
 
         return formattedTranslation;
+    }
+
+    /// <inheritdoc />
+    public async Task<string> TranslateAsync(string key,
+        string? defaultValue = null,
+        CancellationToken cancellationToken = default,
+        params object[] parameters)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
+
+        if (!_providers.Any())
+        {
+            if (!string.IsNullOrWhiteSpace(defaultValue))
+            {
+                return defaultValue;
+            }
+
+            throw new SondorProviderTranslationNotFoundException(key);
+        }
+
+        foreach (var provider in _providers)
+        {
+            var translation = await provider.TranslateAsync(key,
+                defaultValue,
+                cancellationToken,
+                parameters);
+            
+            if (string.IsNullOrWhiteSpace(translation))
+            {
+                continue;
+            }
+
+            return translation;
+        }
+
+        var providers = _providers
+            .Select(current => current.GetType().Name);
+
+        throw new SondorProviderTranslationNotFoundException(key, string.Join(',', providers));
     }
 
     /// <summary>

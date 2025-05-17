@@ -1,4 +1,5 @@
-﻿using Sondor.Translations.Constants;
+﻿using System.Globalization;
+using Sondor.Translations.Constants;
 
 namespace Sondor.Translations.Exceptons;
 
@@ -14,7 +15,11 @@ namespace Sondor.Translations.Exceptons;
 public sealed class SondorTranslationNotFoundException(string key,
     string resource,
     string location) :
-    Exception(string.Format(TranslationConstants.TranslationNotFoundErrorFormat, key, resource, location))
+    Exception(string.Format(TranslationConstants.TranslationNotFoundErrorFormat,
+        key,
+        location,
+        resource,
+        CultureInfo.CurrentUICulture.Name))
 {
     /// <summary>
     /// The translation key.

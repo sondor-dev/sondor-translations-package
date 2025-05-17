@@ -1,4 +1,6 @@
-﻿using Sondor.Translations.Exceptons;
+﻿using Sondor.Translations.Constants;
+using Sondor.Translations.Exceptons;
+using System.Globalization;
 
 namespace Sondor.Translations.Tests.Exceptions;
 
@@ -18,6 +20,11 @@ public class SondorTranslationNotFoundExceptionTests
         const string key = "key";
         const string resource = "resource";
         const string location = "location";
+        var message = string.Format(TranslationConstants.TranslationNotFoundErrorFormat,
+            key,
+            location,
+            resource,
+            CultureInfo.CurrentUICulture.Name);
 
         // act
         var exception = new SondorTranslationNotFoundException(key,
@@ -30,6 +37,7 @@ public class SondorTranslationNotFoundExceptionTests
             Assert.That(exception.Key, Is.EqualTo(key));
             Assert.That(exception.Resource, Is.EqualTo(resource));
             Assert.That(exception.Location, Is.EqualTo(location));
+            Assert.That(exception.Message, Is.EqualTo(message));
         });
     }
 }
