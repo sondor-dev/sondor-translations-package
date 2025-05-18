@@ -14,6 +14,7 @@ offering easy to use solutions for static and dynamic translations.</Description
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>The initial release.</PackageReleaseNotes>
     <PackageIcon>sondor-technology-logo.jpg</PackageIcon>
+    <Title>Sondor.Translations</Title>
   </PropertyGroup>
 
   <ItemGroup>
@@ -48,10 +49,6 @@ offering easy to use solutions for static and dynamic translations.</Description
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Validators\" />
   </ItemGroup>
 
 </Project>
