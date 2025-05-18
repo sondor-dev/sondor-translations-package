@@ -1,5 +1,5 @@
 # Sondor Translations
-[![Build Status](https://dev.azure.com/sondortechnology/Sondor%20Infrastructure/_apis/build/status%2Fsondor-dev.sondor-options-package?repoName=sondor-dev%2Fsondor-options-package&branchName=master)](https://dev.azure.com/sondortechnology/Sondor%20Infrastructure/_build/latest?definitionId=101&repoName=sondor-dev%2Fsondor-options-package&branchName=master) ![NuGet Downloads](https://img.shields.io/nuget/dt/Sondor.Translations)
+[![Build Status](https://dev.azure.com/sondortechnology/Sondor%20Infrastructure/_apis/build/status%2Fsondor-dev.sondor-translations-package?repoName=sondor-dev%2Fsondor-translations-package&branchName=master)](https://dev.azure.com/sondortechnology/Sondor%20Infrastructure/_build/latest?definitionId=101&repoName=sondor-dev%2Fsondor-translations-package&branchName=master) ![NuGet Downloads](https://img.shields.io/nuget/dt/Sondor.Translations)
 
 Sondor translations is aims to provide an easy solution to managing translations,
 offering easy to use solutions for static and dynamic translations.
