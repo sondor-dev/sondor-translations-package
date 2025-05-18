@@ -1,6 +1,6 @@
 ﻿using Sondor.Translations.Constants;
 
-namespace Sondor.Translations.Exceptons;
+namespace Sondor.Translations.Exceptions;
 
 /// <summary>
 /// Sondor provider translation not found exception.
@@ -12,18 +12,9 @@ public class SondorProviderTranslationNotFoundException :
     /// Sondor provider translation not found exception.
     /// </summary>
     /// <param name="key">The key.</param>
-    public SondorProviderTranslationNotFoundException(string key) :
-        base(string.Format(TranslationConstants.NoProvidersTranslationNotFoundErrorFormat, key))
-    {
-    }
-
-    /// <summary>
-    /// Sondor provider translation not found exception.
-    /// </summary>
-    /// <param name="key">The key.</param>
     /// <param name="providers">The providers.</param>
     public SondorProviderTranslationNotFoundException(string key, string providers) : 
-        base(string.Format(TranslationConstants.ProviderTranslationNotFoundErrorFormat, key, providers))
+        base(string.Format(ExceptionConstants.ProviderTranslationNotFoundErrorFormat, key, providers))
     {
     }
 }

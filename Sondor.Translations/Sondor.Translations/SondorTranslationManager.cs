@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
-using Sondor.Translations.Exceptons;
+using Microsoft.Extensions.Options;
+using Sondor.Translations.Exceptions;
+using Sondor.Translations.Options;
 
 namespace Sondor.Translations;
 
@@ -11,7 +13,8 @@ namespace Sondor.Translations;
 /// </remarks>
 /// <param name="localizerFactory">The localizer factory.</param>
 /// <param name="providers">The provider.</param>
-public class SondorTranslationManager(IStringLocalizerFactory localizerFactory,
+public class SondorTranslationManager(IOptions<SondorTranslationOptions> translationOptions,
+    IStringLocalizerFactory localizerFactory,
     IEnumerable<ISondorTranslationProvider>? providers = null) :
     ISondorTranslationManager
 {
@@ -26,6 +29,12 @@ public class SondorTranslationManager(IStringLocalizerFactory localizerFactory,
     /// </summary>
     private readonly IList<ISondorTranslationProvider> _providers =
             providers?.ToList() ?? [];
+
+    /// <summary>
+    /// The translation options.
+    /// </summary>
+    private readonly SondorTranslationOptions _translationOptions =
+        translationOptions.Value;
 
     /// <inheritdoc />
     public string Translate(string key,
@@ -48,6 +57,11 @@ public class SondorTranslationManager(IStringLocalizerFactory localizerFactory,
                 return string.Format(defaultValue, parameters);
             }
 
+            if (_translationOptions.UseKeyAsDefaultValue)
+            {
+                return key;
+            }
+
             throw new SondorTranslationNotFoundException(key, resource, location);
         }
 
@@ -66,12 +80,7 @@ public class SondorTranslationManager(IStringLocalizerFactory localizerFactory,
 
         if (!_providers.Any())
         {
-            if (!string.IsNullOrWhiteSpace(defaultValue))
-            {
-                return defaultValue;
-            }
-
-            throw new SondorProviderTranslationNotFoundException(key);
+            throw new SondorTranslationNoProvidersException();
         }
 
         foreach (var provider in _providers)
@@ -87,6 +96,16 @@ public class SondorTranslationManager(IStringLocalizerFactory localizerFactory,
             }
 
             return translation;
+        }
+
+        if (!string.IsNullOrWhiteSpace(defaultValue))
+        {
+            return defaultValue;
+        }
+
+        if (_translationOptions.UseKeyAsDefaultValue)
+        {
+            return key;
         }
 
         var providers = _providers

@@ -3,10 +3,11 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Sondor.Options.Extensions;
-using Sondor.Translations.Constants;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Localization;
+using Sondor.Translations.Options;
+using Sondor.Translations.Providers;
 
 namespace Sondor.Translations.Extensions;
 
@@ -19,33 +20,32 @@ public static class ServiceCollectionExtensions
     /// Adds Sondor translations to the service collection.
     /// </summary>
     /// <param name="services">The service collection.</param>
-    /// <param name="resource">The resource.</param>
     /// <param name="settings">The settings section.</param>
+    /// <param name="providers">The translation providers.</param>
     /// <returns>Returns the service collection.</returns>
     /// <exception cref="ArgumentException">This exception is thrown when an invalid argument is provided.</exception>
     /// <exception cref="ArgumentNullException">This exception is thrown when an invalid argument is provided.</exception>
     /// <exception cref="ValidationException">This exception is thrown when the configured options fail validation.</exception>
     public static IServiceCollection AddSondorTranslations(this IServiceCollection services,
-        string resource = TranslationConstants.DefaultResourceName,
-        string settings = nameof(SondorTranslationOptions))
+        string settings = nameof(SondorTranslationOptions),
+        IEnumerable<ISondorTranslationProvider>? providers = null)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(resource, nameof(resource));
         ArgumentException.ThrowIfNullOrWhiteSpace(settings, nameof(settings));
 
         services.AddSondorOptions<SondorTranslationOptions>(settings);
 
         var provider = services.BuildServiceProvider();
-        var translationOptions = provider.GetRequiredService<IOptions<SondorTranslationOptions>>().Value;
+        var translationOptions = provider.GetRequiredService<IOptions<SondorTranslationOptions>>();
 
         services.Configure<RequestLocalizationOptions>(options =>
         {
-            options.DefaultRequestCulture = new RequestCulture(translationOptions.DefaultCulture);
+            options.DefaultRequestCulture = new RequestCulture(translationOptions.Value.DefaultCulture);
 
-            options.SupportedUICultures = translationOptions.SupportedCultures
+            options.SupportedUICultures = translationOptions.Value.SupportedCultures
                 .Select(culture => new CultureInfo(culture))
                 .ToList();
 
-            options.SupportedCultures = translationOptions.SupportedCultures
+            options.SupportedCultures = translationOptions.Value.SupportedCultures
                 .Select(culture => new CultureInfo(culture))
                 .ToList();
         });
@@ -56,12 +56,31 @@ public static class ServiceCollectionExtensions
         {
             var localizerFactory = serviceProvider.GetRequiredService<IStringLocalizerFactory>();
 
-            return new SondorTranslationManager(localizerFactory);
+            return new SondorTranslationManager(translationOptions,
+                localizerFactory,
+                providers);
         });
 
-        CultureInfo.CurrentCulture = new CultureInfo(translationOptions.DefaultCulture);
-        CultureInfo.CurrentUICulture = new CultureInfo(translationOptions.DefaultCulture);
+        CultureInfo.CurrentCulture = new CultureInfo(translationOptions.Value.DefaultCulture);
+        CultureInfo.CurrentUICulture = new CultureInfo(translationOptions.Value.DefaultCulture);
 
         return services;
+    }
+
+    /// <summary>
+    /// Loads a JSON file translation provider.
+    /// </summary>
+    /// <param name="services">The services.</param>
+    /// <param name="translationFile">The translation file.</param>
+    /// <returns>Returns the translation provider.</returns>
+    /// <exception cref="InvalidOperationException">This exception is thrown when a required service has not been registered to the provided <paramref name="services"/>.</exception>
+    public static JsonFileTranslationProvider LoadJsonFileTranslationProvider(this IServiceCollection services,
+        FileInfo translationFile)
+    {
+        var provider = services.BuildServiceProvider();
+        var localizationOptions = provider.GetRequiredService<IOptions<RequestLocalizationOptions>>();
+
+        return new JsonFileTranslationProvider(translationFile,
+            localizationOptions);
     }
 }

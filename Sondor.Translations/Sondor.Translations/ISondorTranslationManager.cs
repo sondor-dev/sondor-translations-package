@@ -1,4 +1,4 @@
-﻿using Sondor.Translations.Exceptons;
+﻿using Sondor.Translations.Exceptions;
 
 namespace Sondor.Translations;
 

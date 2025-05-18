@@ -1,5 +1,5 @@
 ﻿using Sondor.Translations.Constants;
-using Sondor.Translations.Exceptons;
+using Sondor.Translations.Exceptions;
 using System.Globalization;
 
 namespace Sondor.Translations.Tests.Exceptions;
@@ -20,7 +20,7 @@ public class SondorTranslationNotFoundExceptionTests
         const string key = "key";
         const string resource = "resource";
         const string location = "location";
-        var message = string.Format(TranslationConstants.TranslationNotFoundErrorFormat,
+        var message = string.Format(ExceptionConstants.TranslationNotFoundErrorFormat,
             key,
             location,
             resource,

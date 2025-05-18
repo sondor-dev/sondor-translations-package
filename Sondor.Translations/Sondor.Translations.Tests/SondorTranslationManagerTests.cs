@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Serilog;
-using Sondor.Translations.Exceptons;
+﻿using System.Globalization;
+using System.Text.Json;
+using Sondor.Translations.Constants;
+using Sondor.Translations.Exceptions;
 using Sondor.Translations.Extensions;
+using Sondor.Translations.Options;
 using Sondor.Translations.Tests.Args;
 
 namespace Sondor.Translations.Tests;
@@ -16,41 +15,6 @@ namespace Sondor.Translations.Tests;
 public class SondorTranslationManagerTests
 {
     /// <summary>
-    /// The services.
-    /// </summary>
-    private readonly IServiceCollection _services;
-
-    /// <summary>
-    /// The translation manager.
-    /// </summary>
-    private readonly ISondorTranslationManager _translationManager;
-
-    /// <summary>
-    /// Creates a new instance of <see cref="SondorTranslationManagerTests"/>.
-    /// </summary>
-    public SondorTranslationManagerTests()
-    {
-        var configurationBuilder = new ConfigurationBuilder();
-        configurationBuilder.Sources.Clear();
-        configurationBuilder.AddJsonFile("appsettings.json");
-
-        var configuration = configurationBuilder.Build();
-
-        _services = new ServiceCollection();
-        _services.AddSerilog(config =>
-        {
-            config
-                .MinimumLevel.Debug()
-                .WriteTo.Console();
-        });
-        _services.AddSingleton<IConfiguration>(configuration);
-        _services.AddSondorTranslations();
-
-        var serviceProvider = _services.BuildServiceProvider();
-        _translationManager = serviceProvider.GetRequiredService<ISondorTranslationManager>();
-    }
-
-    /// <summary>
     /// Ensures the <see cref="SondorTranslationManager.Translate"/> throws the expected exceptions when an invalid value is provided to the key parameter.
     /// </summary>
     /// <param name="value">The value.</param>
@@ -60,6 +24,8 @@ public class SondorTranslationManagerTests
         // arrange
         const string resource = "resource";
         const string location = "location";
+
+        var translationManager = SondorTranslationTests.CreateTranslationManager();
 
         // act
         if (!string.IsNullOrWhiteSpace(value))
@@ -71,13 +37,13 @@ public class SondorTranslationManagerTests
         if (value is null)
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _translationManager.Translate(value!, location, resource));
+                translationManager.Translate(value!, location, resource));
 
             return;
         }
 
         Assert.Throws<ArgumentException>(() =>
-            _translationManager.Translate(value, location, resource));
+            translationManager.Translate(value, location, resource));
     }
 
     /// <summary>
@@ -91,6 +57,8 @@ public class SondorTranslationManagerTests
         const string key = "key";
         const string resource = "resource";
 
+        var translationManager = SondorTranslationTests.CreateTranslationManager();
+
         // act
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -101,13 +69,13 @@ public class SondorTranslationManagerTests
         if (value is null)
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _translationManager.Translate(key, value!, resource));
+                translationManager.Translate(key, value!, resource));
 
             return;
         }
 
         Assert.Throws<ArgumentException>(() =>
-            _translationManager.Translate(key, value, resource));
+            translationManager.Translate(key, value, resource));
     }
 
     /// <summary>
@@ -120,6 +88,8 @@ public class SondorTranslationManagerTests
         // arrange
         const string key = "key";
         const string location = "location";
+        
+        var translationManager = SondorTranslationTests.CreateTranslationManager();
 
         // act
         if (!string.IsNullOrWhiteSpace(value))
@@ -131,37 +101,13 @@ public class SondorTranslationManagerTests
         if (value is null)
         {
             Assert.Throws<ArgumentNullException>(() =>
-                _translationManager.Translate(key, location, value!));
+                translationManager.Translate(key, location, value!));
 
             return;
         }
 
         Assert.Throws<ArgumentException>(() =>
-            _translationManager.Translate(key, location, value));
-    }
-
-    /// <summary>
-    /// Ensures that <see cref="SondorTranslationManager.Translate"/> sets up <see cref="RequestLocalizationOptions"/> correctly.
-    /// </summary>
-    [Test]
-    public void ValidateRequestLocalizationOptions()
-    {
-        // arrange
-        var supported = new [] { "en", "fr" };
-        var serviceProvider = _services.BuildServiceProvider();
-
-        // act
-        var options = serviceProvider.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
-        var supportedCultures = options.SupportedCultures?.Select(current => current.Name) ?? [];
-        var supportedUiCultures = options.SupportedUICultures?.Select(current => current.Name) ?? [];
-
-        // assert
-        Assert.Multiple(() =>
-        {
-            Assert.That(options.DefaultRequestCulture.Culture.Name, Is.EqualTo("en"));
-            Assert.That(supportedCultures, Is.EqualTo(supported));
-            Assert.That(supportedUiCultures, Is.EqualTo(supported));
-        });
+            translationManager.Translate(key, location, value));
     }
 
     /// <summary>
@@ -175,9 +121,17 @@ public class SondorTranslationManagerTests
         const string location = "Sondor.Translations.Tests";
         const string resource = "Resources";
 
+        var translationOptions = new SondorTranslationOptions()
+        {
+            DefaultCulture  = OptionsConstants.DefaultCulture,
+            SupportedCultures = OptionsConstants.DefaultSupportedCultures,
+            UseKeyAsDefaultValue = false
+        };
+        var translationManager = SondorTranslationTests.CreateTranslationManager(translationOptions);
+
         // act && assert
         Assert.Throws<SondorTranslationNotFoundException>(() =>
-            _translationManager.Translate(key, location, resource));
+            translationManager.Translate(key, location, resource));
     }
 
     /// <summary>
@@ -192,8 +146,10 @@ public class SondorTranslationManagerTests
         const string resource = "Resources.en";
         const string expected = "test-key";
 
+        var translationManager = SondorTranslationTests.CreateTranslationManager();
+
         // act
-        var value = _translationManager.Translate(key, location, resource);
+        var value = translationManager.Translate(key, location, resource);
 
         // assert
         Assert.That(value, Is.EqualTo(expected));
@@ -211,11 +167,39 @@ public class SondorTranslationManagerTests
         const string location = "Sondor.Translations.Tests";
         const string resource = "Resources.en";
 
+        var translationManager = SondorTranslationTests.CreateTranslationManager();
+
         // act
-        var value = _translationManager.Translate(key, location, resource, defaultValue);
+        var value = translationManager.Translate(key, location, resource, defaultValue);
 
         // assert
         Assert.That(value, Is.EqualTo(defaultValue));
+    }
+
+    /// <summary>
+    /// Ensures the <see cref="SondorTranslationManager.Translate"/> returns the expected translation when the translation is not found and a default value is provided.
+    /// </summary>
+    [Test]
+    public void TranslateUseKeyAsDefault()
+    {
+        // arrange
+        const string key = "missing-key";
+        const string location = "Sondor.Translations.Tests";
+        const string resource = "Resources";
+
+        var translationOptions = new SondorTranslationOptions()
+        {
+            DefaultCulture = OptionsConstants.DefaultCulture,
+            SupportedCultures = OptionsConstants.DefaultSupportedCultures,
+            UseKeyAsDefaultValue = OptionsConstants.DefaultUseKeyAsDefaultValue
+        };
+        var translationManager = SondorTranslationTests.CreateTranslationManager(translationOptions);
+
+        // act
+        var value = translationManager.Translate(key, location, resource);
+
+        // assert
+        Assert.That(value, Is.EqualTo(key));
     }
 
     /// <summary>
@@ -230,10 +214,12 @@ public class SondorTranslationManagerTests
         const string location = "Sondor.Translations.Tests";
         const string resource = "Resources.en";
         const string defaultValue = "value-is-{0}";
+
         var expected = string.Format(defaultValue, replace);
+        var translationManager = SondorTranslationTests.CreateTranslationManager();
 
         // act
-        var value = _translationManager.Translate(key, location, resource, defaultValue, replace);
+        var value = translationManager.Translate(key, location, resource, defaultValue, replace);
 
         // assert
         Assert.That(value, Is.EqualTo(expected));
@@ -246,6 +232,9 @@ public class SondorTranslationManagerTests
     [TestCaseSource(typeof(StringArgs))]
     public void TranslateAsyncKeyExceptions(string? value)
     {
+        // arrange
+        var translationManager = SondorTranslationTests.CreateTranslationManager();
+
         // act
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -256,12 +245,189 @@ public class SondorTranslationManagerTests
         if (value is null)
         {
             Assert.ThrowsAsync<ArgumentNullException>(() =>
-                _translationManager.TranslateAsync(value!));
+                translationManager.TranslateAsync(value!));
 
             return;
         }
 
         Assert.ThrowsAsync<ArgumentException>(() =>
-            _translationManager.TranslateAsync(value));
+            translationManager.TranslateAsync(value));
+    }
+
+    /// <summary>
+    /// Ensures the <see cref="SondorTranslationManager.TranslateAsync"/> throws <see cref="SondorTranslationNoProvidersException"/> when no providers are registered.
+    /// </summary>
+    [Test]
+    public void TranslateAsyncNoProviders()
+    {
+        // arrange
+        const string key = "key";
+
+        var translationManager = SondorTranslationTests.CreateTranslationManager();
+
+        // act && assert
+        Assert.ThrowsAsync<SondorTranslationNoProvidersException>(() =>
+            translationManager.TranslateAsync(key));
+    }
+
+    /// <summary>
+    /// Ensures the <see cref="SondorTranslationManager.TranslateAsync"/> throws <see cref="SondorProviderTranslationNotFoundException"/> when no providers are registered.
+    /// </summary>
+    [Test]
+    public void TranslateAsyncNotFoundExceptions()
+    {
+        // arrange
+        const string key = "key-invalid";
+
+        var json = JsonSerializer.Serialize(DefaultConstants.DefaultTranslations);
+        var tmpJsonFile = SondorTranslationTests.CreateTmpJsonTranslationFile(json);
+        var translationOptions = new SondorTranslationOptions()
+        {
+            DefaultCulture = OptionsConstants.DefaultCulture,
+            SupportedCultures = OptionsConstants.DefaultSupportedCultures,
+            UseKeyAsDefaultValue = false
+        };
+
+        var services = SondorTranslationTests.CreateTranslationServices(translationOptions);
+        var jsonFileProvider = services.LoadJsonFileTranslationProvider(tmpJsonFile);
+
+        var translationManager =
+            SondorTranslationTests.CreateTranslationManager(translationOptions, providers: [jsonFileProvider]);
+
+        // act && assert
+        Assert.ThrowsAsync<SondorProviderTranslationNotFoundException>(() =>
+            translationManager.TranslateAsync(key));
+    }
+
+    /// <summary>
+    /// Ensures the <see cref="SondorTranslationManager.TranslateAsync"/> returns the default value when the translation is not found and a default value is provided.
+    /// </summary>
+    [Test]
+    public async Task TranslateAsyncDefaultValue()
+    {
+        // arrange
+        const string key = "key-invalid";
+        const string defaultValue = "default-value";
+
+        var json = JsonSerializer.Serialize(DefaultConstants.DefaultTranslations);
+        var tmpJsonFile = SondorTranslationTests.CreateTmpJsonTranslationFile(json);
+        var translationOptions = new SondorTranslationOptions()
+        {
+            DefaultCulture = OptionsConstants.DefaultCulture,
+            SupportedCultures = OptionsConstants.DefaultSupportedCultures,
+            UseKeyAsDefaultValue = false
+        };
+
+        var services = SondorTranslationTests.CreateTranslationServices(translationOptions);
+        var jsonFileProvider = services.LoadJsonFileTranslationProvider(tmpJsonFile);
+
+        var translationManager =
+            SondorTranslationTests.CreateTranslationManager(translationOptions, providers: [jsonFileProvider]);
+
+        // act
+        var translation = await translationManager.TranslateAsync(key, defaultValue);
+
+        // assert
+        Assert.That(translation, Is.EqualTo(defaultValue));
+    }
+
+    /// <summary>
+    /// Ensures the <see cref="SondorTranslationManager.TranslateAsync"/> returns the key when the translation is not found and the key is used as the default value.
+    /// </summary>
+    [Test]
+    public async Task TranslateAsyncKey()
+    {
+        // arrange
+        const string key = "key-invalid";
+
+        var json = JsonSerializer.Serialize(DefaultConstants.DefaultTranslations);
+        var tmpJsonFile = SondorTranslationTests.CreateTmpJsonTranslationFile(json);
+        var translationOptions = new SondorTranslationOptions()
+        {
+            DefaultCulture = OptionsConstants.DefaultCulture,
+            SupportedCultures = OptionsConstants.DefaultSupportedCultures,
+            UseKeyAsDefaultValue = true
+        };
+
+        var services = SondorTranslationTests.CreateTranslationServices(translationOptions);
+        var jsonFileProvider = services.LoadJsonFileTranslationProvider(tmpJsonFile);
+
+        var translationManager =
+            SondorTranslationTests.CreateTranslationManager(translationOptions, providers: [jsonFileProvider]);
+
+        // act
+        var translation = await translationManager.TranslateAsync(key);
+
+        // assert
+        Assert.That(translation, Is.EqualTo(key));
+    }
+
+    /// <summary>
+    /// Ensures the <see cref="SondorTranslationManager.TranslateAsync"/> returns the correct value.
+    /// </summary>
+    [Test]
+    public async Task TranslateAsync()
+    {
+        // arrange
+        const string key = "key-1";
+        const string expected = "value-1";
+
+        var json = JsonSerializer.Serialize(DefaultConstants.DefaultTranslations);
+        var tmpJsonFile = SondorTranslationTests.CreateTmpJsonTranslationFile(json);
+        var translationOptions = new SondorTranslationOptions()
+        {
+            DefaultCulture = OptionsConstants.DefaultCulture,
+            SupportedCultures = OptionsConstants.DefaultSupportedCultures,
+            UseKeyAsDefaultValue = true
+        };
+
+        var services = SondorTranslationTests.CreateTranslationServices(translationOptions);
+        var jsonFileProvider = services.LoadJsonFileTranslationProvider(tmpJsonFile);
+
+        var translationManager =
+            SondorTranslationTests.CreateTranslationManager(translationOptions, providers: [jsonFileProvider]);
+
+        // act
+        var translation = await translationManager.TranslateAsync(key);
+
+        // assert
+        Assert.That(translation, Is.EqualTo(expected));
+    }
+
+    /// <summary>
+    /// Ensures the <see cref="SondorTranslationManager.TranslateAsync"/> returns the correct value.
+    /// </summary>
+    [Test]
+    public async Task TranslateAsyncFallbackToDefaultCulture()
+    {
+        // arrange
+        const string key = "key-1";
+        const string expected = "value-1";
+
+        var frenchCulture = new CultureInfo("fr-FR");
+
+        var json = JsonSerializer.Serialize(DefaultConstants.DefaultTranslations);
+        var tmpJsonFile = SondorTranslationTests.CreateTmpJsonTranslationFile(json);
+        var translationOptions = new SondorTranslationOptions
+        {
+            DefaultCulture = OptionsConstants.DefaultCulture,
+            SupportedCultures = OptionsConstants.DefaultSupportedCultures,
+            UseKeyAsDefaultValue = true
+        };
+
+        var services = SondorTranslationTests.CreateTranslationServices(translationOptions);
+        var jsonFileProvider = services.LoadJsonFileTranslationProvider(tmpJsonFile);
+
+        var translationManager =
+            SondorTranslationTests.CreateTranslationManager(translationOptions, providers: [jsonFileProvider]);
+
+        CultureInfo.CurrentCulture = frenchCulture;
+        CultureInfo.CurrentUICulture = frenchCulture;
+
+        // act
+        var translation = await translationManager.TranslateAsync(key);
+
+        // assert
+        Assert.That(translation, Is.EqualTo(expected));
     }
 }

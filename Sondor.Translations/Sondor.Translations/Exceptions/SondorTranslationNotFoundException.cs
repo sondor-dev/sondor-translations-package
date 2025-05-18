@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using Sondor.Translations.Constants;
 
-namespace Sondor.Translations.Exceptons;
+namespace Sondor.Translations.Exceptions;
 
 /// <summary>
 /// Translation not found exception.
@@ -15,7 +15,7 @@ namespace Sondor.Translations.Exceptons;
 public sealed class SondorTranslationNotFoundException(string key,
     string resource,
     string location) :
-    Exception(string.Format(TranslationConstants.TranslationNotFoundErrorFormat,
+    Exception(string.Format(ExceptionConstants.TranslationNotFoundErrorFormat,
         key,
         location,
         resource,

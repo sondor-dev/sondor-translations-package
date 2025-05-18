@@ -1,4 +1,6 @@
-﻿namespace Sondor.Translations.Tests;
+﻿using Sondor.Translations.Options;
+
+namespace Sondor.Translations.Tests;
 
 /// <summary>
 /// Tests for <see cref="SondorTranslationOptions"/>.
@@ -19,12 +21,14 @@ public class SondorTranslationOptionsTests
             "en-GB",
             "fr-FR"
         };
+        const bool useKeyAsDefaultValue = true;
 
         // act
         var options = new SondorTranslationOptions
         {
             DefaultCulture = defaultCulture,
-            SupportedCultures = supportedCultures
+            SupportedCultures = supportedCultures,
+            UseKeyAsDefaultValue = useKeyAsDefaultValue
         };
 
         // assert
@@ -32,6 +36,7 @@ public class SondorTranslationOptionsTests
         {
             Assert.That(options.DefaultCulture, Is.EqualTo(defaultCulture));
             Assert.That(options.SupportedCultures, Is.EqualTo(supportedCultures));
+            Assert.That(options.UseKeyAsDefaultValue, Is.EqualTo(useKeyAsDefaultValue));
         });
     }
 }

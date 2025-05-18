@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Sondor.Translations.Validators;
+namespace Sondor.Translations.Options.Validators;
 
 /// <summary>
 /// Validator for <see cref="SondorTranslationOptions"/>.

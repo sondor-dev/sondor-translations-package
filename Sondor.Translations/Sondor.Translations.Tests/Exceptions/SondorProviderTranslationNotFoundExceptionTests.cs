@@ -1,5 +1,5 @@
 ﻿using Sondor.Translations.Constants;
-using Sondor.Translations.Exceptons;
+using Sondor.Translations.Exceptions;
 
 namespace Sondor.Translations.Tests.Exceptions;
 
@@ -13,29 +13,12 @@ public class SondorProviderTranslationNotFoundExceptionTests
     /// Ensures the <see cref="SondorProviderTranslationNotFoundException"/> construct sets properties as expected.
     /// </summary>
     [Test]
-    public void Constructor()
-    {
-        // arrange
-        const string key = "key";
-        var expected = string.Format(TranslationConstants.NoProvidersTranslationNotFoundErrorFormat, key);
-
-        // act
-        var exception = new SondorProviderTranslationNotFoundException(key);
-
-        // assert
-        Assert.That(exception.Message, Is.EqualTo(expected));
-    }
-
-    /// <summary>
-    /// Ensures the <see cref="SondorProviderTranslationNotFoundException"/> construct sets properties as expected.
-    /// </summary>
-    [Test]
     public void ConstructorProviders()
     {
         // arrange
         const string key = "key";
         const string providers = "provider-1,provider-2";
-        var expected = string.Format(TranslationConstants.ProviderTranslationNotFoundErrorFormat,
+        var expected = string.Format(ExceptionConstants.ProviderTranslationNotFoundErrorFormat,
             key,
             providers);
 
