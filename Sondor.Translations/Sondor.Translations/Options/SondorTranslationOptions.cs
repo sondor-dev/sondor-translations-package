@@ -16,7 +16,7 @@ public class SondorTranslationOptions
     /// <summary>
     /// The supported cultures.
     /// </summary>
-    public string[] SupportedCultures { get; init; } = OptionsConstants.DefaultSupportedCultures;
+    public string[] SupportedCultures { get; init; } = [];
 
     /// <summary>
     /// Determines weather to use the translation key as the final default value. When set to false,
