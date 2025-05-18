@@ -1,4 +1,5 @@
-﻿using Sondor.Translations.Constants;
+﻿using Sondor.Errors.Exceptions;
+using Sondor.Translations.Constants;
 
 namespace Sondor.Translations.Exceptions;
 
@@ -10,7 +11,7 @@ namespace Sondor.Translations.Exceptions;
 /// </remarks>
 /// <param name="translationsFile">The translations file.</param>
 public class SondorTranslationFileContainsNoCulturesException(FileInfo translationsFile) :
-    Exception(string.Format(ExceptionConstants.TranslationFileContainsNoCultures, translationsFile.FullName))
+    InvalidStateException(string.Format(ExceptionConstants.TranslationFileContainsNoCultures, translationsFile.FullName))
 {
     /// <summary>
     /// The translations file.

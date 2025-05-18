@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Sondor.Errors.Exceptions;
 using Sondor.Translations.Constants;
 
 namespace Sondor.Translations.Exceptions;
@@ -13,7 +14,7 @@ namespace Sondor.Translations.Exceptions;
 /// <param name="translationsFile">The translations file.</param>
 public class SondorTranslationFileMissingDefaultCultureException(CultureInfo defaultCulture,
     FileInfo translationsFile) :
-    Exception(string.Format(ExceptionConstants.TranslationFileMissingDefaultCulture,
+    InvalidStateException(string.Format(ExceptionConstants.TranslationFileMissingDefaultCulture,
         defaultCulture.Name,
         translationsFile.FullName))
 {

@@ -1,4 +1,5 @@
-﻿using Sondor.Translations.Constants;
+﻿using Sondor.Errors.Exceptions;
+using Sondor.Translations.Constants;
 
 namespace Sondor.Translations.Exceptions;
 
@@ -9,4 +10,4 @@ namespace Sondor.Translations.Exceptions;
 /// Creates a new instance of <see cref="SondorTranslationNoProvidersException"/>.
 /// </remarks>
 public class SondorTranslationNoProvidersException() :
-    Exception(ExceptionConstants.TranslationNoProvidersError);
+    InvalidStateException(ExceptionConstants.TranslationNoProvidersError);

@@ -1,4 +1,5 @@
-﻿using Sondor.Translations.Constants;
+﻿using Sondor.Errors.Exceptions;
+using Sondor.Translations.Constants;
 
 namespace Sondor.Translations.Exceptions;
 
@@ -10,7 +11,7 @@ namespace Sondor.Translations.Exceptions;
 /// </remarks>
 /// <param name="translationsFile">The translation file.</param>
 public class SondorEmptyTranslationFileException(FileInfo translationsFile) :
-    Exception(string.Format(ExceptionConstants.TranslationFileEmptyErrorFormat, translationsFile.FullName))
+    InvalidStateException(string.Format(ExceptionConstants.TranslationFileEmptyErrorFormat, translationsFile.FullName))
 {
     /// <summary>
     /// The translations file.
