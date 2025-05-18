@@ -1,0 +1,26 @@
+﻿using Sondor.Translations.Constants;
+using Sondor.Translations.Exceptions;
+
+namespace Sondor.Translations.Options;
+
+/// <summary>
+/// Sondor translation options.
+/// </summary>
+public class SondorTranslationOptions
+{
+    /// <summary>
+    /// The default culture.
+    /// </summary>
+    public string DefaultCulture { get; init; } = OptionsConstants.DefaultCulture;
+
+    /// <summary>
+    /// The supported cultures.
+    /// </summary>
+    public string[] SupportedCultures { get; init; } = OptionsConstants.DefaultSupportedCultures;
+
+    /// <summary>
+    /// Determines weather to use the translation key as the final default value. When set to false,
+    /// will throw <see cref="SondorTranslationNotFoundException"/> when a translation is not found.
+    /// </summary>
+    public bool UseKeyAsDefaultValue { get; init; } = true;
+}
