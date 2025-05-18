@@ -50,6 +50,7 @@ public class ServiceCollectionExtensionsTests
         var requestLocalizationOptions = provider.GetRequiredService<IOptions<RequestLocalizationOptions>>();
         var supportedCultures = requestLocalizationOptions.Value.SupportedCultures?.Select(current => current.Name) ?? [];
         var supportedUiCultures = requestLocalizationOptions.Value.SupportedUICultures?.Select(current => current.Name) ?? [];
+        var defaultRequestCultureProviders = requestLocalizationOptions.Value.RequestCultureProviders.Select(current => current.GetType().Name);
 
         // assert
         Assert.Multiple(() =>
@@ -59,6 +60,7 @@ public class ServiceCollectionExtensionsTests
             Assert.That(requestLocalizationOptions.Value.DefaultRequestCulture.UICulture.Name, Is.EqualTo(OptionsConstants.DefaultCulture));
             Assert.That(supportedCultures, Is.EqualTo(OptionsConstants.DefaultSupportedCultures));
             Assert.That(supportedUiCultures, Is.EqualTo(OptionsConstants.DefaultSupportedCultures));
+            Assert.That(defaultRequestCultureProviders, Is.EqualTo(DefaultConstants.DefaultRequestCultureProviders.Select(current => current.GetType().Name)));
         });
     }
 

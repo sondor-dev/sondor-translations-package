@@ -1,4 +1,6 @@
-﻿namespace Sondor.Translations.Constants;
+﻿using Microsoft.AspNetCore.Localization;
+
+namespace Sondor.Translations.Constants;
 
 /// <summary>
 /// Collection of default constants for translations.
@@ -29,5 +31,14 @@ internal class DefaultConstants
                 Key2
             }
         }
+    };
+
+    /// <summary>
+    /// The default request culture providers.
+    /// </summary>
+    internal static IRequestCultureProvider[] DefaultRequestCultureProviders => new IRequestCultureProvider[]
+    {
+        new AcceptLanguageHeaderRequestCultureProvider(),
+        new CookieRequestCultureProvider()
     };
 }

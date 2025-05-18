@@ -6,6 +6,7 @@ using Sondor.Options.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Localization;
+using Sondor.Translations.Constants;
 using Sondor.Translations.Options;
 using Sondor.Translations.Providers;
 
@@ -22,13 +23,15 @@ public static class ServiceCollectionExtensions
     /// <param name="services">The service collection.</param>
     /// <param name="settings">The settings section.</param>
     /// <param name="providers">The translation providers.</param>
+    /// <param name="requestCultureProviders">The request culture providers.</param>
     /// <returns>Returns the service collection.</returns>
     /// <exception cref="ArgumentException">This exception is thrown when an invalid argument is provided.</exception>
     /// <exception cref="ArgumentNullException">This exception is thrown when an invalid argument is provided.</exception>
     /// <exception cref="ValidationException">This exception is thrown when the configured options fail validation.</exception>
     public static IServiceCollection AddSondorTranslations(this IServiceCollection services,
         string settings = nameof(SondorTranslationOptions),
-        IEnumerable<ISondorTranslationProvider>? providers = null)
+        IEnumerable<ISondorTranslationProvider>? providers = null,
+        IList<IRequestCultureProvider>? requestCultureProviders = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(settings, nameof(settings));
 
@@ -48,6 +51,9 @@ public static class ServiceCollectionExtensions
             options.SupportedCultures = translationOptions.Value.SupportedCultures
                 .Select(culture => new CultureInfo(culture))
                 .ToList();
+
+            options.ApplyCurrentCultureToResponseHeaders = true;
+            options.RequestCultureProviders = requestCultureProviders ?? DefaultConstants.DefaultRequestCultureProviders;
         });
 
         services.AddLocalization();
