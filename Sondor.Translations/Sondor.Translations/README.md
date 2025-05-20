@@ -1,6 +1,6 @@
 # Sondor Translations
-Sondor Translations is a library for managing application settings in .NET applications.
-It provides a simple and flexible way to define,validate, and access application options.
+Sondor translations is aims to provide an easy solution to managing translations,
+offering easy to use solutions for static and dynamic translations.
 
 ## Options
 | Name | Description | Required | Default |
@@ -55,11 +55,11 @@ public class Example {
    - When creating the `resx` file, ensure to name it for the after the culture translations it'll store. Example: `en.resx` for `en` culture translations.
    - The namespace for the example below - `Sondor.Translations.Tests`.
 
-![Resource file example](../../docs/resx-example.png)
+![Resource file example](https://sondor.blob.core.windows.net/sondor-dev-github/resx-example.png)
 
 2. Open the resource file, I'd recommend using Visual Studio as it provides a user friendly UI.
 
-![Resource file open](../../docs/resource-file.png)
+![Resource file open](https://sondor.blob.core.windows.net/sondor-dev-github/resource-file.png)
 
 3. Now read a translation as shown below
 ```csharp
