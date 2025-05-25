@@ -18,16 +18,19 @@ public static class SondorTranslationTests
     /// </summary>
     /// <param name="settings">The settings section.</param>
     /// <param name="providers">The providers.</param>
+    /// <param name="services">The services.</param>
     /// <param name="translationOptions">The translation options.</param>
     /// <returns>Returns the translation manager.</returns>
     public static ISondorTranslationManager CreateTranslationManager(
         SondorTranslationOptions? translationOptions = null,
         string settings = nameof(SondorTranslationOptions),
+        IServiceCollection? services = null,
         IEnumerable<ISondorTranslationProvider>? providers = null
     )
     {
-        var services = CreateTranslationServices(translationOptions,
+        services = CreateTranslationServices(translationOptions,
             settings,
+            services,
             providers);
         var serviceProvider = services.BuildServiceProvider();
         var translationManager = serviceProvider.GetRequiredService<ISondorTranslationManager>();
@@ -40,11 +43,13 @@ public static class SondorTranslationTests
     /// </summary>
     /// <param name="settings">The settings section.</param>
     /// <param name="providers">The providers.</param>
+    /// <param name="services">The services.</param>
     /// <param name="translationOptions">The translation options.</param>
     /// <returns>Returns the translation manager.</returns>
     public static IServiceCollection CreateTranslationServices(
         SondorTranslationOptions? translationOptions = null,
         string settings = nameof(SondorTranslationOptions),
+        IServiceCollection? services = null,
         IEnumerable<ISondorTranslationProvider>? providers = null
     )
     {
@@ -65,7 +70,7 @@ public static class SondorTranslationTests
         configurationBuilder.Sources.Clear();
         configurationBuilder.AddJsonFile(tempJsonFileName);
 
-        var services = new ServiceCollection();
+        services ??= new ServiceCollection();
         services.AddSingleton<IConfiguration>(configurationBuilder.Build());
         services.AddSerilog();
 

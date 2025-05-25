@@ -143,7 +143,7 @@ public class SondorTranslationManagerTests
         // arrange
         const string key = "key";
         const string location = "Sondor.Translations.Tests";
-        const string resource = "Resources.en";
+        const string resource = "Resources.Tests";
         const string expected = "test-key";
 
         var translationManager = SondorTranslationTests.CreateTranslationManager();
@@ -206,13 +206,36 @@ public class SondorTranslationManagerTests
     /// Ensures the <see cref="SondorTranslationManager.Translate"/> formats the value with the provided parameters.
     /// </summary>
     [Test]
-    public void TranslateParameters()
+    public void TranslateNotFoundParameters()
     {
         // arrange
         const string key = "key-invalid";
         const string replace = "value";
         const string location = "Sondor.Translations.Tests";
         const string resource = "Resources.en";
+        const string defaultValue = "value-is-{0}";
+
+        var expected = string.Format(defaultValue, replace);
+        var translationManager = SondorTranslationTests.CreateTranslationManager();
+
+        // act
+        var value = translationManager.Translate(key, location, resource, defaultValue, replace);
+
+        // assert
+        Assert.That(value, Is.EqualTo(expected));
+    }
+
+    /// <summary>
+    /// Ensures the <see cref="SondorTranslationManager.Translate"/> formats the value with the provided parameters.
+    /// </summary>
+    [Test]
+    public void TranslateParameters()
+    {
+        // arrange
+        const string key = "key-replace";
+        const string replace = "value";
+        const string location = "Sondor.Translations.Tests";
+        const string resource = "Resources.Tests";
         const string defaultValue = "value-is-{0}";
 
         var expected = string.Format(defaultValue, replace);
