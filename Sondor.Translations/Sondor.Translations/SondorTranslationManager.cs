@@ -54,7 +54,9 @@ public class SondorTranslationManager(IOptions<SondorTranslationOptions> transla
         {
             if (!string.IsNullOrWhiteSpace(defaultValue))
             {
-                return string.Format(defaultValue, parameters);
+                return parameters.Length == 0 ?
+                    defaultValue :
+                    string.Format(defaultValue, parameters);
             }
 
             if (_translationOptions.UseKeyAsDefaultValue)
@@ -63,6 +65,11 @@ public class SondorTranslationManager(IOptions<SondorTranslationOptions> transla
             }
 
             throw new SondorTranslationNotFoundException(key, resource, location);
+        }
+
+        if (parameters.Length == 0)
+        {
+            return translation;
         }
 
         var formattedTranslation = string.Format(translation, parameters);

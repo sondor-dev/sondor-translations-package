@@ -120,4 +120,7 @@
   <data name="key" xml:space="preserve">
     <value>test-key</value>
   </data>
+  <data name="key-replace" xml:space="preserve">
+    <value>value-is-{0}</value>
+  </data>
 </root>
