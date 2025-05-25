@@ -36,7 +36,7 @@ public class SondorTranslationManager(IOptions<SondorTranslationOptions> transla
     private readonly SondorTranslationOptions _translationOptions =
         translationOptions.Value;
 
-    /// <inheritdoc />
+    /// <inheritdoc ./>
     public string Translate(string key,
         string location,
         string resource,

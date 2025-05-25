@@ -235,7 +235,7 @@ public class SondorTranslationManagerTests
         const string key = "key-replace";
         const string replace = "value";
         const string location = "Sondor.Translations.Tests";
-        const string resource = "Resources.en";
+        const string resource = "Resources.Tests";
         const string defaultValue = "value-is-{0}";
 
         var expected = string.Format(defaultValue, replace);
