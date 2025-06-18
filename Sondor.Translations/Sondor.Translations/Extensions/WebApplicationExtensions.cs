@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 namespace Sondor.Translations.Extensions;
 
 /// <summary>
-/// Collection of <see cref="WebApplication"/> extensions.
+/// Collection of <see cref="IApplicationBuilder"/> extensions.
 /// </summary>
 public static class WebApplicationExtensions
 {
@@ -13,10 +13,12 @@ public static class WebApplicationExtensions
     /// Use Sondor translations for request localization.
     /// </summary>
     /// <param name="application">The application.</param>
+    /// <param name="services">The service collection.</param>
     /// <returns>Returns the web application.</returns>
-    public static WebApplication UseSondorTranslations(this WebApplication application)
+    public static IApplicationBuilder UseSondorTranslations(this IApplicationBuilder application,
+        IServiceProvider services)
     {
-        var localizeOptions = application.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
+        var localizeOptions = services.GetRequiredService<IOptions<RequestLocalizationOptions>>();
 
         application.UseRequestLocalization(localizeOptions.Value);
 

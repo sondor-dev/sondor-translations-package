@@ -21,7 +21,7 @@ public class WebApplicationExtensionsTests
         var application = builder.Build();
 
         // act
-        application.UseSondorTranslations();
+        application.UseSondorTranslations(application.Services);
 
         // assert
         // TODO: Investigate a way to test that middleware is registered
