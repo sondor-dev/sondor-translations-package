@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Sondor.Tests.Constants;
 using Sondor.Translations.Constants;
 using Sondor.Translations.Exceptions;
 using Sondor.Translations.Extensions;
@@ -86,8 +87,8 @@ public class JsonFileTranslationProviderTests
         // arrange
         const string key = "key-1";
 
-        var tmpJsonFile = SondorTranslationTests.CreateTmpJsonTranslationFile("           ");
-        var translationOptions = new SondorTranslationOptions()
+        var tmpJsonFile = SondorTranslationTests.CreateTmpJsonTranslationFile(SondorTestConstants.WhitespaceString);
+        var translationOptions = new SondorTranslationOptions
         {
             DefaultCulture = OptionsConstants.DefaultCulture,
             SupportedCultures = OptionsConstants.DefaultSupportedCultures,

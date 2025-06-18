@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
 using System.Text.Json;
+using Sondor.Tests.Args;
 using Sondor.Translations.Constants;
 using Sondor.Translations.Exceptions;
 using Sondor.Translations.Extensions;
 using Sondor.Translations.Options;
-using Sondor.Translations.Tests.Args;
 
 namespace Sondor.Translations.Tests;
 

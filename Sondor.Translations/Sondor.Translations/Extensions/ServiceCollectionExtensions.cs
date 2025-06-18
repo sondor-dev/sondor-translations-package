@@ -33,7 +33,15 @@ public static class ServiceCollectionExtensions
         IEnumerable<ISondorTranslationProvider>? providers = null,
         IList<IRequestCultureProvider>? requestCultureProviders = null)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(settings, nameof(settings));
+        if (settings is null)
+        {
+            throw new ArgumentNullException(nameof(settings), "Settings cannot be null.");
+        }
+
+        if (string.IsNullOrWhiteSpace(settings))
+        {
+            throw new ArgumentException("Settings cannot be null or whitespace.", nameof(settings));
+        }
 
         services.AddSondorOptions<SondorTranslationOptions>(settings);
 
@@ -52,7 +60,6 @@ public static class ServiceCollectionExtensions
                 .Select(culture => new CultureInfo(culture))
                 .ToList();
 
-            options.ApplyCurrentCultureToResponseHeaders = true;
             options.RequestCultureProviders = requestCultureProviders ?? DefaultConstants.DefaultRequestCultureProviders;
         });
 

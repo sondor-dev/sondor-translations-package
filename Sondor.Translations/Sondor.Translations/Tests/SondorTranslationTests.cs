@@ -55,7 +55,7 @@ public static class SondorTranslationTests
         });
         var tmpFilename = Path.GetTempFileName();
 
-        Path.ChangeExtension(tmpFilename, ".json");
+        _ = Path.ChangeExtension(tmpFilename, ".json");
 
         var tempJsonFileName = tmpFilename + ".json";
 
@@ -89,7 +89,7 @@ public static class SondorTranslationTests
 
         var jsonFile = new FileInfo(jsonFileName);
 
-        Path.ChangeExtension(tempFileName, ".json");
+        _ = Path.ChangeExtension(tempFileName, ".json");
 
         File.WriteAllText(jsonFileName, json);
 

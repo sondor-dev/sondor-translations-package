@@ -35,8 +35,6 @@ public abstract class FileTranslationProvider(FileInfo translationsFile,
         CancellationToken cancellationToken = default,
         params object[] parameters)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-
         var translation = await ReadAsync(key, cancellationToken);
 
         return translation;

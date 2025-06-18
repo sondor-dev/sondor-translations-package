@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using Sondor.Tests.Args;
 using Sondor.Translations.Constants;
 using Sondor.Translations.Extensions;
 
@@ -13,6 +14,31 @@ namespace Sondor.Translations.Tests.Extensions;
 [TestFixture]
 public class ServiceCollectionExtensionsTests
 {
+    /// <summary>
+    /// Ensures that <see cref="ServiceCollectionExtensions.AddSondorTranslations"/> throws an exception when the settings section is null.
+    /// </summary>
+    [TestCaseSource(typeof(StringArgs))]
+    public void AddSondorTranslations_throws_exception(string? value)
+    {
+        // arrange
+        var services = new ServiceCollection();
+
+        // act & assert
+        if (!string.IsNullOrWhiteSpace(value))
+        {
+            return;
+        }
+
+        if (value is null)
+        {
+            Assert.Throws<ArgumentNullException>(() => services.AddSondorTranslations(value!));
+
+            return;
+        }
+
+        Assert.Throws<ArgumentException>(() => services.AddSondorTranslations(value));
+    }
+
     /// <summary>
     /// Ensures that <see cref="ServiceCollectionExtensions.AddSondorTranslations"/> 
     /// adds <see cref="LocalizationOptions"/> to the service collection.

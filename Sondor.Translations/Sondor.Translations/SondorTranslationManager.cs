@@ -43,9 +43,35 @@ public class SondorTranslationManager(IOptions<SondorTranslationOptions> transla
         string? defaultValue = null,
         params object[] parameters)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
-        ArgumentException.ThrowIfNullOrWhiteSpace(location, nameof(location));
-        ArgumentException.ThrowIfNullOrWhiteSpace(resource, nameof(resource));
+        if (key is null)
+        {
+            throw new ArgumentNullException(nameof(key), "Key cannot be null.");
+        }
+
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentException("Key cannot be null or whitespace.", nameof(key));
+        }
+
+        if (location is null)
+        {
+            throw new ArgumentNullException(nameof(location), "Location cannot be null.");
+        }
+
+        if (string.IsNullOrWhiteSpace(location))
+        {
+            throw new ArgumentException("Location cannot be null or whitespace.", nameof(location));
+        }
+
+        if (resource is null)
+        {
+            throw new ArgumentNullException(nameof(resource), "Resource cannot be null.");
+        }
+
+        if (string.IsNullOrWhiteSpace(resource))
+        {
+            throw new ArgumentException("Resource cannot be null or whitespace.", nameof(resource));
+        }
 
         var localizer = CreateLocalizer(location, resource);
         var translation = localizer[key];
@@ -76,7 +102,15 @@ public class SondorTranslationManager(IOptions<SondorTranslationOptions> transla
         CancellationToken cancellationToken = default,
         params object[] parameters)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(key, nameof(key));
+        if (key is null)
+        {
+            throw new ArgumentNullException(nameof(key), "Key cannot be null.");
+        }
+
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentException("Key cannot be null or whitespace.", nameof(key));
+        }
 
         if (!_providers.Any())
         {
