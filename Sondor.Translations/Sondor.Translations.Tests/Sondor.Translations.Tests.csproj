@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\en.resx">
+    <EmbeddedResource Update="Resources\Tests.en.resx">
       <Generator></Generator>
     </EmbeddedResource>
   </ItemGroup>

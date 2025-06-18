@@ -37,7 +37,9 @@ public abstract class FileTranslationProvider(FileInfo translationsFile,
     {
         var translation = await ReadAsync(key, cancellationToken);
 
-        return translation;
+        return parameters.Length > 0 ?
+            string.Format(translation) :
+            translation;
     }
 
     /// <summary>

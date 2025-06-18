@@ -29,7 +29,11 @@ offering easy to use solutions for static and dynamic translations.
 services.AddSondorTranslations(settings: "SondorTranslationOptions",
   providers: null);
 ```
-3. Add `Sondor.Translations` namespace and add `ISondorTranslationManager` to your constructor.
+3. Call `application.UseSondorTranslations()` to register the request localization middleware.
+```csharp
+application.UseSondorTranslations();
+```
+4. Add `Sondor.Translations` namespace and add `ISondorTranslationManager` to your constructor.
 ```csharp
 using Sondor.Translations;
 
@@ -45,14 +49,14 @@ public class Example {
   }
 }
 ```
-4. Now, follow the guides below to read translations respective of your chosen method
+5. Now, follow the guides below to read translations respective of your chosen method
    - [How to use resource files](#how-to-use-resource-files)
    - [How to use JSON file translation provider](#how-to-use-json-file-translation-provider)
 
 ## How to use resource files
 1. Create the resource (`.resx`) file in the desired directory.
    - Take note of the location, as the namespace path will be required when reading translations.
-   - When creating the `resx` file, ensure to name it for the after the culture translations it'll store. Example: `en.resx` for `en` culture translations.
+   - When creating the `resx` file, ensure to name it after the culture translations it'll store. Example: `Tests.en.resx` for `en` culture translations.
    - The namespace for the example below - `Sondor.Translations.Tests`.
 
 ![Resource file example](https://sondor.blob.core.windows.net/sondor-dev-github/resx-example.png)
@@ -65,7 +69,7 @@ public class Example {
 ```csharp
 _translationManager.Translate(key: "key",
   location: "Sondor.Translations.Tests",
-  resource: "Resources.en");
+  resource: "Resources.Tests");
 ```
 
 ## How to use JSON file translation provider
