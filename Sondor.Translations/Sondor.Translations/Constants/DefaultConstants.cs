@@ -36,9 +36,9 @@ internal class DefaultConstants
     /// <summary>
     /// The default request culture providers.
     /// </summary>
-    internal static IRequestCultureProvider[] DefaultRequestCultureProviders => new IRequestCultureProvider[]
-    {
+    internal static IRequestCultureProvider[] DefaultRequestCultureProviders =>
+    [
         new AcceptLanguageHeaderRequestCultureProvider(),
         new CookieRequestCultureProvider()
-    };
+    ];
 }

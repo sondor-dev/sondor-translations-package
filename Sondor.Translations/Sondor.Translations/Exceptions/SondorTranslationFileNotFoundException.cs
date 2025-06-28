@@ -11,7 +11,7 @@ namespace Sondor.Translations.Exceptions;
 /// </remarks>
 /// <param name="translationsFile">The translations file.</param>
 public sealed class SondorTranslationFileNotFoundException(FileInfo translationsFile) :
-    InvalidStateException(string.Format(ExceptionConstants.TranslationFileNotFoundErrorFormat, translationsFile.FullName))
+    ResourceInvalidException(string.Format(ExceptionConstants.TranslationFileNotFoundErrorFormat, translationsFile.FullName))
 {
     /// <summary>
     /// The translations file.

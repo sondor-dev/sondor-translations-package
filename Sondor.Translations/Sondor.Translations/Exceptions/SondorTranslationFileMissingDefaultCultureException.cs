@@ -14,7 +14,7 @@ namespace Sondor.Translations.Exceptions;
 /// <param name="translationsFile">The translations file.</param>
 public class SondorTranslationFileMissingDefaultCultureException(CultureInfo defaultCulture,
     FileInfo translationsFile) :
-    InvalidStateException(string.Format(ExceptionConstants.TranslationFileMissingDefaultCulture,
+    ResourceInvalidException(string.Format(ExceptionConstants.TranslationFileMissingDefaultCulture,
         defaultCulture.Name,
         translationsFile.FullName))
 {

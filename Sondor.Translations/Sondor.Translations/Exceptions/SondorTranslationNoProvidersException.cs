@@ -10,4 +10,4 @@ namespace Sondor.Translations.Exceptions;
 /// Creates a new instance of <see cref="SondorTranslationNoProvidersException"/>.
 /// </remarks>
 public class SondorTranslationNoProvidersException() :
-    InvalidStateException(ExceptionConstants.TranslationNoProvidersError);
+    ResourceInvalidException(ExceptionConstants.TranslationNoProvidersError);

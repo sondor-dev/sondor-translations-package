@@ -12,4 +12,4 @@ namespace Sondor.Translations.Exceptions;
 /// <param name="key">The key.</param>
 /// <param name="providers">The providers.</param>
 public class SondorProviderTranslationNotFoundException(string key, string providers) :
-    EntityNotFoundException(string.Format(ExceptionConstants.ProviderTranslationNotFoundErrorFormat, key, providers));
+    ResourceNotFoundException(string.Format(ExceptionConstants.ProviderTranslationNotFoundErrorFormat, key, providers));

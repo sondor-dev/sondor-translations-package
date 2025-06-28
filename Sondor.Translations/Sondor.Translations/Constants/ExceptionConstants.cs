@@ -9,13 +9,13 @@ internal class ExceptionConstants
     /// The translation not found error message format.
     /// </summary>
     internal const string TranslationNotFoundErrorFormat =
-        "Unfortunately, no translation could by find with a key of '{0}'. Searched in '{1}.{2}' - {3}";
+        "Unfortunately, no translation could by found with a key of '{0}'. Searched in '{1}.{2}' - {3}";
 
     /// <summary>
     /// The translation provider not found error message format.
     /// </summary>
     internal const string ProviderTranslationNotFoundErrorFormat =
-        "Unfortunately, no translation could by find with a key of '{0}'. Searched in '{1}' providers.";
+        "Unfortunately, no translation could by found with a key of '{0}'. Searched in '{1}' providers.";
 
     /// <summary>
     /// The translation file not found error format.

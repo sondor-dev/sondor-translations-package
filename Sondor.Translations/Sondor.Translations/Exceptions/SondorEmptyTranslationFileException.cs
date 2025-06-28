@@ -11,7 +11,7 @@ namespace Sondor.Translations.Exceptions;
 /// </remarks>
 /// <param name="translationsFile">The translation file.</param>
 public class SondorEmptyTranslationFileException(FileInfo translationsFile) :
-    InvalidStateException(string.Format(ExceptionConstants.TranslationFileEmptyErrorFormat, translationsFile.FullName))
+    ResourceInvalidException(string.Format(ExceptionConstants.TranslationFileEmptyErrorFormat, translationsFile.FullName))
 {
     /// <summary>
     /// The translations file.
