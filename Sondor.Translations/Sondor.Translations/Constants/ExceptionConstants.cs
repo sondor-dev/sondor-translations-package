@@ -58,4 +58,16 @@ internal class ExceptionConstants
     /// </summary>
     internal const string NoTranslationCulturesErrorFormat =
         "Unfortunately, the translation was loaded successful but contains no translations for any cultures. File: '{0}'.";
+
+    /// <summary>
+    /// The unsupported translation key type error message format.
+    /// </summary>
+    internal const string UnsupportedTranslationKeyType =
+        "The type '{0}' is not supported as a translation key. Please use an enum with the 'TranslationKeyAttribut' applied.";
+
+    /// <summary>
+    /// The unsupported translation default type error message format.
+    /// </summary>
+    internal const string UnsupportedTranslationDefaultType =
+        "The type '{0}' is not supported as a translation default. Please use an enum with the 'TranslationDefaultAttribute' applied.";
 }
