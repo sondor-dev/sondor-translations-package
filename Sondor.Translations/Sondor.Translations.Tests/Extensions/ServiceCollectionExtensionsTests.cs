@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Sondor.Tests.Args;
 using Sondor.Translations.Constants;
 using Sondor.Translations.Extensions;
+using Sondor.Translations.Options;
 
 namespace Sondor.Translations.Tests.Extensions;
 
@@ -88,6 +90,75 @@ public class ServiceCollectionExtensionsTests
             Assert.That(supportedUiCultures, Is.EqualTo(OptionsConstants.DefaultSupportedCultures));
             Assert.That(defaultRequestCultureProviders, Is.EqualTo(DefaultConstants.DefaultRequestCultureProviders.Select(current => current.GetType().Name)));
         });
+    }
+
+    /// <summary>
+    /// Ensures that <see cref="ServiceCollectionExtensions.AddTestTranslationOptions"/> adds <see cref="SondorTranslationOptions"/> to the configuration.
+    /// </summary>
+    [Test]
+    public void AddTestTranslationOptions()
+    {
+        // arrange
+        var expected = new SondorTranslationOptions
+        {
+            DefaultCulture = "en",
+            SupportedCultures = ["en", "fr"],
+            UseKeyAsDefaultValue = true
+        };
+        var configuration = new ConfigurationBuilder().Build();
+        var services = new ServiceCollection()
+            .AddSingleton<IConfiguration>(configuration);
+
+        // act
+        services.AddTestTranslationOptions(expected, nameof(SondorTranslationOptions));
+        services.AddSondorTranslations();
+
+        // assert
+        var provider = services.BuildServiceProvider();
+
+        using (Assert.EnterMultipleScope())
+        {
+            var actual = provider.GetRequiredService<IOptions<SondorTranslationOptions>>().Value;
+
+            Assert.DoesNotThrow(() => provider.GetRequiredService<IOptionsMonitor<SondorTranslationOptions>>());
+            Assert.DoesNotThrow(() => provider.GetRequiredService<IOptionsSnapshot<SondorTranslationOptions>>());
+
+            SondorTranslationOptions.Assert(actual, expected);
+        }
+    }
+
+    /// <summary>
+    /// Ensures that <see cref="ServiceCollectionExtensions.AddTestTranslation"/> adds <see cref="SondorTranslationOptions"/> to the configuration.
+    /// </summary>
+    [Test]
+    public void AddTestTranslation()
+    {
+        // arrange
+        var expected = new SondorTranslationOptions
+        {
+            DefaultCulture = "en",
+            SupportedCultures = ["en", "fr"],
+            UseKeyAsDefaultValue = true
+        };
+        var configuration = new ConfigurationBuilder().Build();
+        var services = new ServiceCollection()
+            .AddSingleton<IConfiguration>(configuration);
+
+        // act
+        services.AddTestTranslation(expected, nameof(SondorTranslationOptions));
+
+        // assert
+        var provider = services.BuildServiceProvider();
+
+        using (Assert.EnterMultipleScope())
+        {
+            var actual = provider.GetRequiredService<IOptions<SondorTranslationOptions>>().Value;
+
+            Assert.DoesNotThrow(() => provider.GetRequiredService<IOptionsMonitor<SondorTranslationOptions>>());
+            Assert.DoesNotThrow(() => provider.GetRequiredService<IOptionsSnapshot<SondorTranslationOptions>>());
+
+            SondorTranslationOptions.Assert(actual, expected);
+        }
     }
 
     /// <summary>

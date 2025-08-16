@@ -1,14 +1,16 @@
-﻿using System.Globalization;
-using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Sondor.Options.Extensions;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
+using Sondor.Options.Extensions;
 using Sondor.Translations.Constants;
 using Sondor.Translations.Options;
 using Sondor.Translations.Providers;
+using System.Globalization;
+using Sondor.Tests.Extensions;
 
 namespace Sondor.Translations.Extensions;
 
@@ -78,6 +80,77 @@ public static class ServiceCollectionExtensions
         CultureInfo.CurrentUICulture = new CultureInfo(translationOptions.Value.DefaultCulture);
 
         return services;
+    }
+
+    /// <summary>
+    /// Add test translation options to the service collection.
+    /// </summary>
+    /// <param name="options">The options.</param>
+    /// <param name="services">The services.</param>
+    /// <param name="sectionName">The section name.</param>
+    /// <returns>Returns the service collection.</returns>
+    public static IServiceCollection AddTestTranslationOptions(this IServiceCollection services,
+        SondorTranslationOptions? options = null,
+        string? sectionName = null)
+    {
+        options ??= new SondorTranslationOptions
+        {
+            DefaultCulture = "en",
+            SupportedCultures = ["en", "fr", "de"],
+            UseKeyAsDefaultValue = true
+        };
+
+        var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
+
+        var configurationBuilder = new ConfigurationBuilder();
+
+        if (configuration is not null)
+        {
+            configurationBuilder.AddConfiguration(configuration);
+        }
+
+        configurationBuilder
+            .AddOptions(options, sectionName)
+            .Build();
+
+        return services
+            .AddSingleton<IConfiguration>(configurationBuilder.Build());
+    }
+
+    /// <summary>
+    /// Add test translation options to the service collection.
+    /// </summary>
+    /// <param name="options">The options.</param>
+    /// <param name="services">The services.</param>
+    /// <param name="sectionName">The section name.</param>
+    /// <returns>Returns the service collection.</returns>
+    public static IServiceCollection AddTestTranslation(this IServiceCollection services,
+        SondorTranslationOptions? options = null,
+        string? sectionName = null)
+    {
+        options ??= new SondorTranslationOptions
+        {
+            DefaultCulture = "en",
+            SupportedCultures = ["en", "fr", "de"],
+            UseKeyAsDefaultValue = true
+        };
+
+        var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
+
+        var configurationBuilder = new ConfigurationBuilder();
+
+        if (configuration is not null)
+        {
+            configurationBuilder.AddConfiguration(configuration);
+        }
+
+        configurationBuilder
+            .AddOptions(options, sectionName)
+            .Build();
+
+        return services
+            .AddSingleton<IConfiguration>(configurationBuilder.Build())
+            .AddSondorTranslations(sectionName ?? nameof(SondorTranslationOptions));
     }
 
     /// <summary>
