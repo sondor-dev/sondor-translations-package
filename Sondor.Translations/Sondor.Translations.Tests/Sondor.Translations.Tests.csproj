@@ -21,7 +21,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="NUnit3TestAdapter" Version="5.1.0" />
-    <PackageReference Include="Sondor.Tests" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
