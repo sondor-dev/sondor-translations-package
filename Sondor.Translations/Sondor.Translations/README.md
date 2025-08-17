@@ -58,13 +58,7 @@ public class Example {
    - Take note of the location, as the namespace path will be required when reading translations.
    - When creating the `resx` file, ensure to name it after the culture translations it'll store. Example: `Tests.en.resx` for `en` culture translations.
    - The namespace for the example below - `Sondor.Translations.Tests`.
-
-![Resource file example](https://sondor.blob.core.windows.net/sondor-dev-github/resx-example.png)
-
 2. Open the resource file, I'd recommend using Visual Studio as it provides a user friendly UI.
-
-![Resource file open](https://sondor.blob.core.windows.net/sondor-dev-github/resource-file.png)
-
 3. Now read a translation as shown below
 ```csharp
 _translationManager.Translate(key: "key",
