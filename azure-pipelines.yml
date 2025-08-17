@@ -31,3 +31,4 @@ steps:
   parameters:
     nuGetFeedType: 'external'
     repository: ${{ variables.repository }}
+    feed: ''
