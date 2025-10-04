@@ -1,7 +1,9 @@
 ﻿using Sondor.Errors.Exceptions;
+using Sondor.Translations.Args;
 using Sondor.Translations.Constants;
 using Sondor.Translations.Exceptions;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Sondor.Translations.Options;
 
@@ -11,6 +13,11 @@ namespace Sondor.Translations.Options;
 public class SondorTranslationOptions
 {
     /// <summary>
+    /// The supported cultures backing field.
+    /// </summary>
+    private readonly string[] _supportedCultures = OptionsConstants.DefaultSupportedCultures;
+
+    /// <summary>
     /// The default culture.
     /// </summary>
     public string DefaultCulture { get; init; } = OptionsConstants.DefaultCulture;
@@ -18,7 +25,13 @@ public class SondorTranslationOptions
     /// <summary>
     /// The supported cultures.
     /// </summary>
-    public string[] SupportedCultures { get; init; } = [];
+    public string[] SupportedCultures
+    {
+        get => _supportedCultures;
+        init => _supportedCultures = value.Length == 0 || value.All(string.IsNullOrWhiteSpace) || value.All(_supportedCultures.Contains)
+            ? OptionsConstants.DefaultSupportedCultures
+            : value;
+    }
 
     /// <summary>
     /// Determines weather to use the translation key as the final default value. When set to false,

@@ -21,8 +21,6 @@ public class SondorTranslationOptionsValidator :
             .NotEmpty()
             .NotNull()
             .Must(cultures => cultures.Length > 0)
-            .WithMessage("At least one supported culture must be provided.")
-            .Must(cultures => cultures.Length == cultures.Distinct().Count())
-            .WithMessage("Duplicate cultures are not allowed.");
+            .WithMessage("At least one supported culture must be provided.");
     }
 }

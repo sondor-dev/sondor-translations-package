@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
 using Sondor.Tests.Args;
+using Sondor.Translations.Args;
 using Sondor.Translations.Constants;
 using Sondor.Translations.Extensions;
 using Sondor.Translations.Options;
@@ -102,7 +103,7 @@ public class ServiceCollectionExtensionsTests
         var expected = new SondorTranslationOptions
         {
             DefaultCulture = "en",
-            SupportedCultures = ["en", "fr"],
+            SupportedCultures = new LanguageArgs().Cast<string>().ToArray(),
             UseKeyAsDefaultValue = true
         };
         var configuration = new ConfigurationBuilder().Build();
@@ -136,8 +137,8 @@ public class ServiceCollectionExtensionsTests
         // arrange
         var expected = new SondorTranslationOptions
         {
-            DefaultCulture = "en",
-            SupportedCultures = ["en", "fr"],
+            DefaultCulture = OptionsConstants.DefaultCulture,
+            SupportedCultures = OptionsConstants.DefaultSupportedCultures,
             UseKeyAsDefaultValue = true
         };
         var configuration = new ConfigurationBuilder().Build();

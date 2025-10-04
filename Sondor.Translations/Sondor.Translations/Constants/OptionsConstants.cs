@@ -1,4 +1,5 @@
-﻿using Sondor.Translations.Options;
+﻿using Sondor.Translations.Args;
+using Sondor.Translations.Options;
 
 namespace Sondor.Translations.Constants;
 
@@ -20,11 +21,9 @@ internal static class OptionsConstants
     /// <summary>
     /// The default supported cultures.
     /// </summary>
-    internal static readonly string[] DefaultSupportedCultures = [
-        "en",
-        "en-GB",
-        "en-US"
-    ];
+    internal static readonly string[] DefaultSupportedCultures = new LanguageArgs()
+        .Cast<string>()
+        .ToArray();
 
     /// <summary>
     /// The default translation options.
